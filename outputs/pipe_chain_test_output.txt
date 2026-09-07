@@ -1,0 +1,14 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.13, pytest-9.1.1, pluggy-1.6.0 -- C:\Users\Hurshita Gupta\OneDrive\Desktop\langchain_lcel\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\Hurshita Gupta\OneDrive\Desktop\langchain_lcel
+configfile: pyproject.toml
+plugins: anyio-4.15.1, langsmith-0.12.2
+collecting ... collected 4 items
+
+tests/test_pipe_chain.py::test_valid_input PASSED                        [ 25%]
+tests/test_pipe_chain.py::test_missing_question PASSED                   [ 50%]
+tests/test_pipe_chain.py::test_valid_output PASSED                       [ 75%]
+tests/test_pipe_chain.py::test_invalid_output PASSED                     [100%]
+
+============================== 4 passed in 1.02s ==============================

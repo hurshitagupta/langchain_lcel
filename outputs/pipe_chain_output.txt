@@ -1,0 +1,44 @@
+Enter your query: what is the capital of india
+RESULT:
+New Delhi.
+
+CHAIN GRAPH:
+ +----------------------+  
+ | validate_input_input |  
+ +----------------------+  
+             *             
+             *             
+             *             
+    +----------------+     
+    | validate_input |     
+    +----------------+     
+             *             
+             *             
+             *             
+  +--------------------+   
+  | ChatPromptTemplate |   
+  +--------------------+   
+             *             
+             *             
+             *             
+    +----------------+     
+    | ChatOpenRouter |     
+    +----------------+     
+             *             
+             *             
+             *             
+    +-----------------+    
+    | StrOutputParser |    
+    +-----------------+    
+             *             
+             *             
+             *             
+    +-----------------+    
+    | validate_output |    
+    +-----------------+    
+             *             
+             *             
+             *             
++------------------------+ 
+| validate_output_output | 
++------------------------+ 
