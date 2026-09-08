@@ -1,0 +1,7 @@
+Primary model called
+Primary model called
+Primary model called
+Fallback model called
+
+RESULT:
+Fallback model succeeded

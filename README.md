@@ -419,6 +419,76 @@ Task 4 uses input and output validation, a per-call timeout, capped retries, and
 
 The reusable token-budget guard is maintained in `guards.py`.
 
+---
+
+## Task 5 — Failure Paths
+
+### Objective
+
+Implement LCEL failure handling using `with_retry` and `with_fallbacks`, and demonstrate both mechanisms firing during execution.
+
+### Implementation
+
+The primary Runnable deliberately raises a `ValueError` to simulate a failure:
+
+```python
+def primary_model(data):
+    print("Primary model called")
+    raise ValueError("Primary Model Failed")
+```
+
+Retry and fallback behaviour are attached directly to the Runnable:
+
+```python
+chain = (
+    primary_model_runnable
+    .with_retry(
+        retry_if_exception_type=(ValueError,),
+        stop_after_attempt=3
+    )
+    .with_fallbacks([
+        RunnableLambda(fallback_model)
+    ])
+)
+```
+
+The primary Runnable is attempted three times. After all attempts fail, LCEL automatically executes the fallback Runnable.
+
+### Run
+
+```bash
+uv run python -m failure_paths.failure_paths
+```
+
+Save the output:
+
+```bash
+uv run python -m failure_paths.failure_paths > outputs/failure_paths_output.txt 2>&1
+```
+
+### Testing
+
+The tests verify the primary failure and successful recovery through the retry and fallback chain.
+
+Run:
+
+```bash
+uv run python -m pytest tests/test_failure_paths.py -v -s
+```
+
+Save the test evidence:
+
+```bash
+uv run python -m pytest tests/test_failure_paths.py -v -s > outputs/failure_paths_test_output.txt 2>&1
+```
+
+### Guardrails
+
+Task 5 demonstrates capped retry attempts and graceful fallback handling. The controlled failure makes the retry and fallback behaviour reproducible rather than depending on an unpredictable external API failure.
+
+Other common project guardrails, including validation, timeout, token limits, token-budget checks, and environment-based secret handling, are maintained across the assessment where applicable.
+
+
 
 
 
