@@ -192,3 +192,74 @@ os.environ["BASE_URL"]
 No API key is hardcoded in the source files.
 
 The `.env` file containing actual credentials is excluded from version control, while `.env.example` documents the required variables without exposing their values.
+
+---
+
+## Task 2 — Passthrough
+
+### Objective
+
+Use `RunnablePassthrough.assign` to preserve the original input while adding a derived value to the same data.
+
+### Implementation
+
+The chain validates the input and then uses `RunnablePassthrough.assign` to calculate and add the query's word count:
+
+```python id="0dh3sp"
+chain = (
+    validate_input_runnable
+    | RunnablePassthrough.assign(
+        word_count=RunnableLambda(count_words)
+    )
+)
+```
+
+For example:
+
+```text id="0c7ebh"
+Input:
+{"q": "What is LCEL in LangChain?"}
+
+Output:
+{"q": "What is LCEL in LangChain?", "word_count": 5}
+```
+
+This shows that the original `q` is carried forward while `word_count` is added as a derived value.
+
+### Run
+
+```bash id="s9pf41"
+uv run python -m passthrough.passthrough
+```
+
+Save the output:
+
+```bash id="hlh8cc"
+uv run python -m passthrough.passthrough > outputs/passthrough_output.txt 2>&1
+```
+
+### Testing
+
+The tests verify:
+
+* The original query is preserved and the correct word count is added.
+* Invalid input is rejected.
+
+Run:
+
+```bash id="17s5jq"
+uv run python -m pytest tests/test_passthrough.py -v
+```
+
+Save the test output:
+
+```bash id="uvst4e"
+uv run python -m pytest tests/test_passthrough.py -v > outputs/passthrough_test_output.txt 2>&1
+```
+
+### Guardrails
+
+Input validation is applied before the passthrough operation. Invalid or missing input is rejected through the reusable validation guard.
+
+Task 2 does not make a model/API call, so model-specific controls such as timeout and output token limits are not part of this execution path. Secrets used elsewhere in the project remain environment-based through `.env`.
+
