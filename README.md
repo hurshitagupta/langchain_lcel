@@ -263,3 +263,91 @@ Input validation is applied before the passthrough operation. Invalid or missing
 
 Task 2 does not make a model/API call, so model-specific controls such as timeout and output token limits are not part of this execution path. Secrets used elsewhere in the project remain environment-based through `.env`.
 
+---
+
+## Task 3 — Branching
+
+### Objective
+
+Use `RunnableBranch` to route a user query to different sub-chains based on its classification.
+
+### Implementation
+
+A Pydantic model restricts the classifier output to two possible values:
+
+```python
+class Classify(BaseModel):
+    classification: Literal["maths", "prose"] = Field(
+        description="Classify the query as maths or prose"
+    )
+```
+
+The model uses structured output to classify each query:
+
+```python
+structured_model = model.with_structured_output(Classify)
+
+classifier_chain = classifier_prompt | structured_model
+```
+
+`RunnablePassthrough.assign` keeps the original query while adding its classification. `RunnableBranch` then selects the appropriate chain:
+
+```python
+chain = (
+    validate_input_runnable
+    | RunnablePassthrough.assign(
+        classification=classifier_chain
+    )
+    | RunnableBranch(
+        (is_maths, maths_chain),
+        prose_chain
+    )
+    | validate_output_runnable
+).with_retry(stop_after_attempt=3)
+```
+
+Maths queries are sent to `maths_chain`, while all other valid classifications are handled by `prose_chain`.
+
+### Run
+
+```bash
+uv run python -m branching.branching
+```
+
+Save the execution output:
+
+```bash
+uv run python -m branching.branching > outputs/branching_output.txt 2>&1
+```
+
+### Testing
+
+The tests verify:
+
+* Maths classification selects the maths condition.
+* Prose classification selects the prose condition.
+* Invalid input is rejected.
+
+Run:
+
+```bash
+uv run python -m pytest tests/test_branching.py -v
+```
+
+Save the test output:
+
+```bash
+uv run python -m pytest tests/test_branching.py -v > outputs/branching_test_output.txt 2>&1
+```
+
+### Guardrails
+
+Task 3 uses input and output validation, a per-call model timeout, capped retries, and a maximum model output of 100 tokens. API credentials and model configuration are loaded through environment variables rather than hardcoded in the source.
+
+The common token-budget guard is maintained in `guards.py` and will be evidenced separately with the assessment's required failure cases.
+
+---
+
+
+
+

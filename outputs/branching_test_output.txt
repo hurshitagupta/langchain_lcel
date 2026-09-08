@@ -1,0 +1,13 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.13, pytest-9.1.1, pluggy-1.6.0 -- C:\Users\Hurshita Gupta\OneDrive\Desktop\langchain_lcel\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\Hurshita Gupta\OneDrive\Desktop\langchain_lcel
+configfile: pyproject.toml
+plugins: anyio-4.15.1, langsmith-0.12.2
+collecting ... collected 3 items
+
+tests/test_branching.py::test_maths_classification PASSED                [ 33%]
+tests/test_branching.py::test_prose_classification PASSED                [ 66%]
+tests/test_branching.py::test_invalid_input PASSED                       [100%]
+
+============================== 3 passed in 0.89s ==============================
