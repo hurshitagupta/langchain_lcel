@@ -348,6 +348,79 @@ The common token-budget guard is maintained in `guards.py` and will be evidenced
 
 ---
 
+## Task 4 — Configurability
+
+### Objective
+
+Expose the model and temperature as configurable fields and change them at invocation time without rebuilding the LCEL chain.
+
+### Implementation
+
+`configurable_fields` is used to expose `model_name` and `temperature`:
+
+```python
+configurable_model = model.configurable_fields(
+    model_name=ConfigurableField(
+        id="model_name",
+        name="Model Name"
+    ),
+    temperature=ConfigurableField(
+        id="temperature",
+        name="Temperature"
+    )
+)
+```
+
+The default invocation uses the model and temperature defined when the model is created. A second invocation overrides both values at runtime:
+
+```python
+configured_result = chain.invoke(
+    data,
+    config={
+        "configurable": {
+            "model_name": os.environ["ALTERNATE_MODEL_NAME"],
+            "temperature": 0.7
+        }
+    }
+)
+```
+
+The terminal output prints the model and temperature used for both executions, providing evidence that the same chain can run with different runtime configurations.
+
+### Run
+
+```bash
+uv run python -m configurability.configurability
+```
+
+Save the output:
+
+```bash
+uv run python -m configurability.configurability > outputs/configurability_output.txt 2>&1
+```
+
+### Testing
+
+The tests verify that `model_name` and `temperature` are exposed as configurable fields and that invalid input is rejected.
+
+```bash
+uv run python -m pytest tests/test_configurability.py -v
+```
+
+Save the test output:
+
+```bash
+uv run python -m pytest tests/test_configurability.py -v > outputs/configurability_test_output.txt 2>&1
+```
+
+### Guardrails
+
+Task 4 uses input and output validation, a per-call timeout, capped retries, and a maximum model output token limit. Provider credentials, model names, and the base URL are loaded from environment variables rather than hardcoded in the source.
+
+The reusable token-budget guard is maintained in `guards.py`.
+
+
+
 
 
 

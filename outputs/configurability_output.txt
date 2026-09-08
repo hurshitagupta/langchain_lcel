@@ -1,0 +1,17 @@
+Enter your query: suggest me a name for my business related to ai
+
+DEFAULT CONFIGURATION:
+Model: openai/gpt-oss-120b
+Temperature: 0
+Result: **AIspire Labs** – a blend of “AI” and “inspire,” suggesting innovative, forward‑thinking solutions.
+
+RUNTIME CONFIGURATION:
+Model: nvidia/nemotron-3-ultra-550b-a55b
+Temperature: 0.7
+Result: Here are a few categorized suggestions:
+
+**Modern & Tech-Forward**
+*   **Nexa** / **Nexus AI**
+*   **Synap** / **Synapse**
+*   **Cortex**
+*   **Axiom**
